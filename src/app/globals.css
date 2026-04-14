@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0A0A0F;
+  --color-surface: #111118;
+  --color-card: #16161F;
+  --color-card-hover: #1E1E2A;
+  --color-border: #ffffff0f;
+  --color-accent: #E63946;
+  --color-accent-hover: #FF4D5A;
+  --color-accent-muted: #E6394620;
+  --color-gold: #F5A623;
+  --color-text-primary: #F0F0F5;
+  --color-text-secondary: #8B8B9E;
+  --color-text-muted: #55556A;
+
+  --font-display: var(--font-bebas);
+  --font-body: var(--font-dm-sans);
+
+  --animate-fade-in: fadeIn 0.4s ease-out forwards;
+  --animate-slide-up: slideUp 0.35s ease-out forwards;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-scale-in: scaleIn 0.2s ease-out forwards;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
+
+/* Standard CSS custom properties — required for var() in plain CSS rules */
+:root {
+  --color-bg: #0A0A0F;
+  --color-surface: #111118;
+  --color-card: #16161F;
+  --color-card-hover: #1E1E2A;
+  --color-border: #ffffff0f;
+  --color-accent: #E63946;
+  --color-accent-hover: #FF4D5A;
+  --color-accent-muted: #E6394620;
+  --color-gold: #F5A623;
+  --color-text-primary: #F0F0F5;
+  --color-text-secondary: #8B8B9E;
+  --color-text-muted: #55556A;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-dm-sans), sans-serif;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* ─── Layout Utilities ─────────────────────────────────────── */
+.container-app {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;   /* 24px mobile */
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .container-app {
+    padding-left: 2rem;   /* 32px tablet */
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-app {
+    padding-left: 4rem;   /* 64px desktop */
+    padding-right: 4rem;
+  }
+}
