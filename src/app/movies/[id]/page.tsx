@@ -63,7 +63,6 @@ export default async function MovieDetailPage({ params }: PageProps) {
           style={{ objectFit: 'cover' }}
           sizes="100vw"
         />
-        {/* Gradient overlays */}
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to top, #0A0A0F 0%, #0A0A0F 5%, rgba(10,10,15,0.4) 50%, transparent 100%)',
@@ -74,17 +73,22 @@ export default async function MovieDetailPage({ params }: PageProps) {
         }} />
       </div>
 
-      {/* Main content — overlaps hero */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 48px' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '260px 1fr',
-          gap: '48px',
-          marginTop: '-280px',
-          position: 'relative',
-          zIndex: 10,
-        }}>
+      {/* Main content */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 48px' }}
+        className="!px-4 sm:!px-6 lg:!px-12 xl:!px-[48px]"
+      >
 
+        {/* ── DESKTOP layout (md and above) ── */}
+        <div
+          className="hidden md:grid"
+          style={{
+            gridTemplateColumns: '260px 1fr',
+            gap: '48px',
+            marginTop: '-280px',
+            position: 'relative',
+            zIndex: 10,
+          }}
+        >
           {/* Poster */}
           <div style={{ flexShrink: 0 }}>
             <div style={{
@@ -104,105 +108,125 @@ export default async function MovieDetailPage({ params }: PageProps) {
 
           {/* Info */}
           <div style={{ paddingTop: '160px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <DetailsContent movie={movie} director={director} hours={hours} mins={mins} />
+          </div>
+        </div>
 
-            {/* Breadcrumb */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
-              <Link href="/movies" style={{ color: '#8B8B9E', textDecoration: 'none' }}>
-                Movies
-              </Link>
-              <span style={{ color: '#55556A' }}>›</span>
-              <span style={{ color: '#F0F0F5' }}>{movie.title}</span>
+        {/* ── MOBILE layout (below md) ── */}
+        <div className="md:hidden" style={{ position: 'relative', zIndex: 10, marginTop: '-120px' }}>
+          {/* Poster + title side by side on mobile */}
+          <div className="flex gap-4 items-end mb-5">
+            <div style={{
+              flexShrink: 0,
+              width: '110px',
+              position: 'relative',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              aspectRatio: '2/3',
+              boxShadow: '0 12px 30px rgba(0,0,0,0.8)',
+            }}>
+              <Image
+                src={posterUrl}
+                alt={movie.title}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="110px"
+                priority
+              />
             </div>
 
-            {/* Title */}
-            <h1 style={{
-              fontFamily: 'var(--font-bebas)',
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-              letterSpacing: '0.03em',
-              color: '#F0F0F5',
-              lineHeight: 1,
-            }}>
-              {movie.title}
-            </h1>
+            {/* Title + quick meta */}
+            <div className="flex flex-col gap-2 pb-1">
+              <h1 style={{
+                fontFamily: 'var(--font-bebas)',
+                fontSize: 'clamp(1.8rem, 7vw, 2.5rem)',
+                letterSpacing: '0.03em',
+                color: '#F0F0F5',
+                lineHeight: 1,
+              }}>
+                {movie.title}
+              </h1>
 
-            {/* Tagline */}
-            {movie.tagline && (
-              <p style={{ color: '#8B8B9E', fontSize: '1rem', fontStyle: 'italic' }}>
-                "{movie.tagline}"
-              </p>
-            )}
-
-            {/* Meta row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
               {/* Rating */}
               <div style={{
-                display: 'flex', alignItems: 'center', gap: '6px',
+                display: 'inline-flex', alignItems: 'center', gap: '5px',
                 background: '#16161F', border: '1px solid #ffffff0f',
-                borderRadius: '8px', padding: '6px 12px',
+                borderRadius: '8px', padding: '4px 10px', width: 'fit-content',
               }}>
                 <span style={{ color: '#F5A623' }}>★</span>
-                <span style={{ color: '#F0F0F5', fontWeight: 700, fontSize: '1rem' }}>
+                <span style={{ color: '#F0F0F5', fontWeight: 700, fontSize: '0.9rem' }}>
                   {movie.vote_average.toFixed(1)}
                 </span>
-                <span style={{ color: '#8B8B9E', fontSize: '0.75rem' }}>
+                <span style={{ color: '#8B8B9E', fontSize: '0.7rem' }}>
                   ({movie.vote_count.toLocaleString()})
                 </span>
               </div>
 
-              {/* Year */}
-              <span style={{ color: '#8B8B9E', fontSize: '0.875rem' }}>
-                {movie.release_date?.slice(0, 4)}
-              </span>
-
-              {/* Runtime */}
-              {movie.runtime ? (
-                <span style={{ color: '#8B8B9E', fontSize: '0.875rem' }}>
-                  {hours}h {mins}m
+              {/* Year · Runtime */}
+              <div className="flex items-center gap-3 flex-wrap">
+                <span style={{ color: '#8B8B9E', fontSize: '0.8rem' }}>
+                  {movie.release_date?.slice(0, 4)}
                 </span>
-              ) : null}
-
-              {/* Status */}
-              <span style={{
-                background: '#E6394620', color: '#E63946',
-                border: '1px solid #E6394640', borderRadius: '6px',
-                padding: '3px 10px', fontSize: '0.75rem', fontWeight: 600,
-              }}>
-                {movie.status}
-              </span>
-            </div>
-
-            {/* Genres */}
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {movie.genres.map(g => (
-                <span key={g.id} style={{
-                  background: '#16161F', border: '1px solid #ffffff0f',
-                  borderRadius: '6px', padding: '4px 12px',
-                  color: '#F0F0F5', fontSize: '0.8rem',
+                {movie.runtime ? (
+                  <span style={{ color: '#8B8B9E', fontSize: '0.8rem' }}>
+                    {hours}h {mins}m
+                  </span>
+                ) : null}
+                <span style={{
+                  background: '#E6394620', color: '#E63946',
+                  border: '1px solid #E6394640', borderRadius: '6px',
+                  padding: '2px 8px', fontSize: '0.7rem', fontWeight: 600,
                 }}>
-                  {g.name}
+                  {movie.status}
                 </span>
-              ))}
-            </div>
-
-            {/* Overview */}
-            <p style={{
-              color: '#9CA3AF', fontSize: '0.9rem', lineHeight: 1.7,
-              maxWidth: '600px',
-            }}>
-              {movie.overview}
-            </p>
-
-            {/* Director */}
-            {director && (
-              <div style={{ fontSize: '0.875rem' }}>
-                <span style={{ color: '#8B8B9E' }}>Director: </span>
-                <span style={{ color: '#F0F0F5', fontWeight: 600 }}>{director.name}</span>
               </div>
-            )}
+            </div>
           </div>
+
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs mb-3">
+            <Link href="/movies" style={{ color: '#8B8B9E', textDecoration: 'none' }}>Movies</Link>
+            <span style={{ color: '#55556A' }}>›</span>
+            <span style={{ color: '#F0F0F5' }} className="truncate">{movie.title}</span>
+          </div>
+
+          {/* Tagline */}
+          {movie.tagline && (
+            <p style={{ color: '#8B8B9E', fontSize: '0.875rem', fontStyle: 'italic', marginBottom: '12px' }}>
+              "{movie.tagline}"
+            </p>
+          )}
+
+          {/* Genres */}
+          <div className="flex gap-2 flex-wrap mb-3">
+            {movie.genres.map(g => (
+              <span key={g.id} style={{
+                background: '#16161F', border: '1px solid #ffffff0f',
+                borderRadius: '6px', padding: '3px 10px',
+                color: '#F0F0F5', fontSize: '0.75rem',
+              }}>
+                {g.name}
+              </span>
+            ))}
+          </div>
+
+          {/* Overview */}
+          <p style={{
+            color: '#9CA3AF', fontSize: '0.875rem', lineHeight: 1.7, marginBottom: '12px',
+          }}>
+            {movie.overview}
+          </p>
+
+          {/* Director */}
+          {director && (
+            <div style={{ fontSize: '0.825rem' }}>
+              <span style={{ color: '#8B8B9E' }}>Director: </span>
+              <span style={{ color: '#F0F0F5', fontWeight: 600 }}>{director.name}</span>
+            </div>
+          )}
         </div>
 
-        {/* Cast */}
+        {/* ── CAST (shared, responsive grid) ── */}
         {topCast.length > 0 && (
           <div style={{ marginTop: '64px' }}>
             <h2 style={{
@@ -211,15 +235,13 @@ export default async function MovieDetailPage({ params }: PageProps) {
             }}>
               Cast
             </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-              gap: '16px',
-            }}>
+            <div className="grid gap-4"
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))' }}
+            >
               {topCast.map(member => (
                 <div key={member.id} style={{ textAlign: 'center' }}>
                   <div style={{
-                    width: '80px', height: '80px', borderRadius: '50%',
+                    width: '72px', height: '72px', borderRadius: '50%',
                     background: '#16161F', margin: '0 auto 8px',
                     overflow: 'hidden', border: '2px solid #ffffff0f',
                   }}>
@@ -227,8 +249,8 @@ export default async function MovieDetailPage({ params }: PageProps) {
                       <Image
                         src={`https://image.tmdb.org/t/p/w185${member.profile_path}`}
                         alt={member.name}
-                        width={80}
-                        height={80}
+                        width={72}
+                        height={72}
                         style={{ objectFit: 'cover' }}
                       />
                     ) : (
@@ -239,15 +261,15 @@ export default async function MovieDetailPage({ params }: PageProps) {
                       }}>👤</div>
                     )}
                   </div>
-                  <p style={{ color: '#F0F0F5', fontSize: '0.75rem', fontWeight: 600 }}>{member.name}</p>
-                  <p style={{ color: '#8B8B9E', fontSize: '0.7rem', marginTop: '2px' }}>{member.character}</p>
+                  <p style={{ color: '#F0F0F5', fontSize: '0.72rem', fontWeight: 600 }}>{member.name}</p>
+                  <p style={{ color: '#8B8B9E', fontSize: '0.68rem', marginTop: '2px' }}>{member.character}</p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Similar Movies */}
+        {/* ── SIMILAR MOVIES (shared, responsive grid) ── */}
         {similarMovies.length > 0 && (
           <div style={{ marginTop: '64px' }}>
             <h2 style={{
@@ -256,11 +278,9 @@ export default async function MovieDetailPage({ params }: PageProps) {
             }}>
               More Like This
             </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-              gap: '20px',
-            }}>
+            <div className="grid gap-4"
+              style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))' }}
+            >
               {similarMovies.map(m => (
                 <MovieCard key={m.id} movie={m} />
               ))}
@@ -269,5 +289,98 @@ export default async function MovieDetailPage({ params }: PageProps) {
         )}
       </div>
     </div>
+  )
+}
+
+// ── Extracted desktop info block to avoid duplication ──────────────────────
+function DetailsContent({ movie, director, hours, mins }: {
+  movie: Awaited<ReturnType<typeof getMovieDetail>>
+  director: { name: string } | undefined
+  hours: number
+  mins: number
+}) {
+  return (
+    <>
+      {/* Breadcrumb */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
+        <Link href="/movies" style={{ color: '#8B8B9E', textDecoration: 'none' }}>Movies</Link>
+        <span style={{ color: '#55556A' }}>›</span>
+        <span style={{ color: '#F0F0F5' }}>{movie.title}</span>
+      </div>
+
+      {/* Title */}
+      <h1 style={{
+        fontFamily: 'var(--font-bebas)',
+        fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+        letterSpacing: '0.03em',
+        color: '#F0F0F5',
+        lineHeight: 1,
+      }}>
+        {movie.title}
+      </h1>
+
+      {/* Tagline */}
+      {movie.tagline && (
+        <p style={{ color: '#8B8B9E', fontSize: '1rem', fontStyle: 'italic' }}>
+          "{movie.tagline}"
+        </p>
+      )}
+
+      {/* Meta row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '6px',
+          background: '#16161F', border: '1px solid #ffffff0f',
+          borderRadius: '8px', padding: '6px 12px',
+        }}>
+          <span style={{ color: '#F5A623' }}>★</span>
+          <span style={{ color: '#F0F0F5', fontWeight: 700, fontSize: '1rem' }}>
+            {movie.vote_average.toFixed(1)}
+          </span>
+          <span style={{ color: '#8B8B9E', fontSize: '0.75rem' }}>
+            ({movie.vote_count.toLocaleString()})
+          </span>
+        </div>
+        <span style={{ color: '#8B8B9E', fontSize: '0.875rem' }}>
+          {movie.release_date?.slice(0, 4)}
+        </span>
+        {movie.runtime ? (
+          <span style={{ color: '#8B8B9E', fontSize: '0.875rem' }}>{hours}h {mins}m</span>
+        ) : null}
+        <span style={{
+          background: '#E6394620', color: '#E63946',
+          border: '1px solid #E6394640', borderRadius: '6px',
+          padding: '3px 10px', fontSize: '0.75rem', fontWeight: 600,
+        }}>
+          {movie.status}
+        </span>
+      </div>
+
+      {/* Genres */}
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        {movie.genres.map(g => (
+          <span key={g.id} style={{
+            background: '#16161F', border: '1px solid #ffffff0f',
+            borderRadius: '6px', padding: '4px 12px',
+            color: '#F0F0F5', fontSize: '0.8rem',
+          }}>
+            {g.name}
+          </span>
+        ))}
+      </div>
+
+      {/* Overview */}
+      <p style={{ color: '#9CA3AF', fontSize: '0.9rem', lineHeight: 1.7, maxWidth: '600px' }}>
+        {movie.overview}
+      </p>
+
+      {/* Director */}
+      {director && (
+        <div style={{ fontSize: '0.875rem' }}>
+          <span style={{ color: '#8B8B9E' }}>Director: </span>
+          <span style={{ color: '#F0F0F5', fontWeight: 600 }}>{director.name}</span>
+        </div>
+      )}
+    </>
   )
 }
