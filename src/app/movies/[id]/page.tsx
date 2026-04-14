@@ -258,7 +258,7 @@ export default async function MovieDetailPage({ params }: PageProps) {
                         width: '100%', height: '100%',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: '#55556A', fontSize: '1.5rem',
-                      }}>👤</div>
+                      }}></div>
                     )}
                   </div>
                   <p style={{ color: '#F0F0F5', fontSize: '0.72rem', fontWeight: 600 }}>{member.name}</p>
